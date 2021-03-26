@@ -1,0 +1,2 @@
+This experiment simulates how frequently a confidence interval calculated on a subset of the data generalizes to another subset.
+It utilizes `joblib` to run the simulations in parallel with 48 processes, configurable in the bash script.
