@@ -1,0 +1,3 @@
+This experiment estimates the power of the hypothesis tests by measuring how frequently they can detect a difference between ROUGE-1 and a version of ROUGE-1 which only uses k% of the summary tokens.
+The script utilizes the `joblib` library to run the simulations in parallel with 48 processes, configurable in the bash script.
+To quickly pass the data between the processes, we had to serialize the data to `/dev/shm`, which is a RAM-backed file system.
