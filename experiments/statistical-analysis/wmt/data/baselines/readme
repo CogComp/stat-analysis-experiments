@@ -1,0 +1,42 @@
+Here we compute baseline metrics scores.
+
+The following are commands:
+---------------------------------------
+make tokenized
+
+make sentence-BLEU.seg.score
+make mteval-inter
+make mteval.sys.score
+
+make TER.sys
+make TER.sys.score
+
+make PER.sys
+make PER.sys.score
+
+make WER.sys
+make WER.sys.score
+
+make CDER.sys
+make CDER.sys.score
+
+make sacreBLEU-BLEU
+make sacreBLEU-BLEU.sys.score
+
+make sacreBLEU-chrF
+make sacreBLEU-chrF.sys.score
+
+make chrF
+python chrF-score.py chrF >chrF.seg.score
+gzip chrF.seg.score
+#python chrF-hybrid-score.py chrF
+
+make nw1-chrF
+python chrF-score.py chrF+ >chrF+.seg.score
+gzip chrF+.seg.score
+#python chrF-hybrid-score.py chrF+
+
+#cat chrF-process/chrF.sys.score.gz chrF-process/chrF.hybrid.sys.score.gz >chrF.sys.score.gz
+#cat chrF-process/chrF+.sys.score.gz  chrF-process/chrF+.hybrid.sys.score.gz >chrF+.sys.score.gz
+
+

@@ -1,0 +1,11 @@
+Here we list what we manually corrected in metric submissions:
+
+- WMDO:
+    ... Split 73216 into two lines, this is the only line with this mistake
+
+- 
+
+====
+E.g. Type:
+    "vimdiff ITER.sys.scores.gz ../../submissions-as-received/ITER.sys.scores.gz"
+to see the difference intuitively.
