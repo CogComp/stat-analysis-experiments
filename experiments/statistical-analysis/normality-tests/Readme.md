@@ -1,0 +1,1 @@
+Runs the Shapiro-Wilk test for testing the normality of a set of data.

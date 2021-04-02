@@ -1,5 +1,6 @@
 import logging
 import numpy as np
+import os
 import scipy.stats
 import warnings
 from scipy.stats import kendalltau, pearsonr, spearmanr
@@ -215,7 +216,8 @@ def bootstrap_ci(corr_func: SummaryCorrFunc,
                  Y: np.ndarray,
                  sample_func: Callable,
                  alpha: float = 0.05,
-                 num_samples: int = 1000) -> Tuple[float, float]:
+                 num_samples: int = 1000,
+                 samples_output_file: str = None) -> Tuple[float, float]:
     """
     Calculates a bootstrap-based confidence interval using the correlation function and X and Y. The `corr_func` should
     be the system-, summary- or global level correlations with a Pearson, Spearman, or Kendall function passed as its
@@ -232,6 +234,14 @@ def bootstrap_ci(corr_func: SummaryCorrFunc,
             samples.append(r)
     lower = np.percentile(samples, alpha / 2 * 100)
     upper = np.percentile(samples, (1.0 - alpha / 2) * 100)
+
+    # Save the samples to a file if provided
+    if samples_output_file:
+        os.makedirs(os.path.dirname(samples_output_file), exist_ok=True)
+        with open(samples_output_file, 'w') as out:
+            for sample in samples:
+                out.write(str(sample) + '\n')
+
     return lower, upper
 
 
