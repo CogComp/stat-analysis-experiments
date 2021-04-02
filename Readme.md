@@ -1,5 +1,5 @@
 # "Resampling Methods" Experiments
-This paper contains the experiments related to the paper "Resampling Methods for Evaluating Summarization Evaluation Metrics."
+This paper contains the experiments related to the paper [A Statistical Analysis of Summarization Evaluation Metrics using Resampling Methods](https://arxiv.org/abs/2104.00054).
 The experiments use a fork of the [SacreROUGE library](https://github.com/danieldeutsch/sacrerouge).
 If you want to use the statistical analyses proposed in the paper, they have been integrated into SacreROUGE, and we recommend you use the implementation there instead of here.
 
