@@ -136,7 +136,7 @@ def main(args):
 
         fontsize = 12
         axes[1, 0].set_xlabel('TAC 2008', fontsize=fontsize, labelpad=10)
-        axes[1, 1].set_xlabel('CNN/DM - Fabbri et al. (2020)', fontsize=fontsize, labelpad=10)
+        axes[1, 1].set_xlabel('CNN/DM - Fabbri et al. (2021)', fontsize=fontsize, labelpad=10)
         axes[1, 2].set_xlabel('CNN/DM - Bhandari et al. (2020)', fontsize=fontsize, labelpad=10)
 
         axes[0, 2].set_ylabel('Summary-\nLevel', rotation=0, labelpad=35, fontsize=fontsize)
