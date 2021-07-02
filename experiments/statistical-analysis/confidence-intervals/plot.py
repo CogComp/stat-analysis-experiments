@@ -75,7 +75,7 @@ def main(args):
         set_colors(parts3)
 
         ax1.set_title('TAC 2008')
-        ax2.set_title('CNN/DM - Fabbri et al. (2020)')
+        ax2.set_title('CNN/DM - Fabbri et al. (2021)')
         ax3.set_title('CNN/DM - Bhandari et al. (2020)')
 
         ax1.set_yticks(ticks)
