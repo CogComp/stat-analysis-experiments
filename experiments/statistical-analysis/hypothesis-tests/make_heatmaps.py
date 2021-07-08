@@ -9,17 +9,44 @@ import sys
 from collections import defaultdict
 from glob import glob
 from matplotlib.patches import Rectangle
+from typing import Dict
 
 sys.path.append('.')
 
 from sacrerouge.commands.partial_conjunction_test import run_all_partial_conjunction_pvalue_test
+from sacrerouge.stats import partial_conjunction_pvalue_test
 
 
 LEVELS = ['summary_level', 'system_level', 'global']
 COEFS = ['pearson', 'spearman', 'kendall']
 
 
-def load_data(input_dir):
+def run_joint_bonferroni(pvalues: Dict):
+    # partial_results[metric][level][coef]['significant'].append(name)
+    partial_results = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(list))))
+    for level in LEVELS:
+        for coef in COEFS:
+            pairs = []
+            pvalues_list = []
+            for metric1 in pvalues[level][coef].keys():
+                for metric2 in pvalues[level][coef][metric1].keys():
+                    pvalue1 = pvalues[level][coef][metric1][metric2]
+                    pvalue2 = pvalues[level][coef][metric2][metric1]
+                    if pvalue1 <= pvalue2:
+                        pairs.append((metric1, metric2))
+                        pvalues_list.append(pvalue1)
+                    else:
+                        # Do when we look at (metric2, metric1)
+                        pass
+
+            k, significant_indices = partial_conjunction_pvalue_test('bonferroni', pvalues_list, alpha=0.05)
+            for i in significant_indices:
+                metric1, metric2 = pairs[i]
+                partial_results[metric1][level][coef]['significant'].append(metric2)
+    return partial_results
+
+
+def load_data(input_dir, run_bonferroni_on_full_table: bool):
     pvalues = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
     metrics = set()
     metric_to_pairs = defaultdict(list)
@@ -41,11 +68,15 @@ def load_data(input_dir):
             for coef in COEFS:
                 pvalues[level][coef][metric1][metric2] = correlations[level][coef]['pvalue']
 
-    partial_results = {}
-    for metric, pairs in metric_to_pairs.items():
-        names = [name for name, _ in pairs]
-        files = [file_path for _, file_path in pairs]
-        partial_results[metric] = run_all_partial_conjunction_pvalue_test('bonferroni', files, names)
+    if run_bonferroni_on_full_table:
+        partial_results = run_joint_bonferroni(pvalues)
+    else:
+        # Runs it per-metric
+        partial_results = {}
+        for metric, pairs in metric_to_pairs.items():
+            names = [name for name, _ in pairs]
+            files = [file_path for _, file_path in pairs]
+            partial_results[metric] = run_all_partial_conjunction_pvalue_test('bonferroni', files, names)
 
     metrics = sorted(metrics)
     return pvalues, partial_results, metrics
@@ -89,11 +120,12 @@ def plot_heatmap(data, highlights, metrics, ax, cbar, cbar_ax):
         ax.add_patch(Rectangle((j, i), 1, 1, fill=False, edgecolor='#ff7f0e', lw=2))
 
 
-
 def main(args):
-    tac_pvalues, tac_partial_results, tac_metrics = load_data(args.tac08_input)
-    fab_pvalues, fab_partial_results, fab_metrics = load_data(args.fabbri2020_input)
-    bha_pvalues, bha_partial_results, bha_metrics = load_data(args.bhandari2020_input)
+    run_bonferroni_on_full_table = args.bonferroni_scope == 'table'
+
+    tac_pvalues, tac_partial_results, tac_metrics = load_data(args.tac08_input, run_bonferroni_on_full_table)
+    fab_pvalues, fab_partial_results, fab_metrics = load_data(args.fabbri2020_input, run_bonferroni_on_full_table)
+    bha_pvalues, bha_partial_results, bha_metrics = load_data(args.bhandari2020_input, run_bonferroni_on_full_table)
 
     assert tac_metrics == fab_metrics == bha_metrics
     metrics = tac_metrics
@@ -156,6 +188,7 @@ if __name__ == '__main__':
     argp.add_argument('--tac08-input', required=True)
     argp.add_argument('--fabbri2020-input', required=True)
     argp.add_argument('--bhandari2020-input', required=True)
+    argp.add_argument('--bonferroni-scope', required=True, choices=['table', 'row'])
     argp.add_argument('--output-dir', required=True)
     args = argp.parse_args()
     main(args)
