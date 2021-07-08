@@ -450,7 +450,7 @@ def permutation_diff_test(corr_func: SummaryCorrFunc,
                           Z: np.ndarray,
                           permute_func: Callable,
                           two_tailed: bool,
-                          num_permutations: int = 1000,
+                          num_permutations: int = 10000,
                           return_test_statistic: bool = False,
                           return_deltas: bool = False) -> float:
     """
