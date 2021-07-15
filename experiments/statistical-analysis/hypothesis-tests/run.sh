@@ -20,6 +20,7 @@ for dataset in "${datasets[@]}"; do
             --hypothesis-test ${method} \
             --confidence 95 \
             --num-tails 1 \
+            --random-seed 4 \
             --output-file ${DIR}/output/${dataset}/${method}/${metric1}/${metric2}.json \
             &
         done
@@ -29,10 +30,13 @@ for dataset in "${datasets[@]}"; do
   done
 done
 
-for method in "${methods[@]}"; do
-  python ${DIR}/make_heatmaps.py \
-    --tac08-input ${DIR}/output/tac2008/${method}/ \
-    --fabbri2020-input ${DIR}/output/fabbri2020/${method}/ \
-    --bhandari2020-input ${DIR}/output/bhandari2020/${method}/ \
-    --output-dir ${DIR}/output/heatmaps/${method}
+for scope in 'row' 'table'; do
+  for method in "${methods[@]}"; do
+    python ${DIR}/make_heatmaps.py \
+      --tac08-input ${DIR}/output/tac2008/${method}/ \
+      --fabbri2020-input ${DIR}/output/fabbri2020/${method}/ \
+      --bhandari2020-input ${DIR}/output/bhandari2020/${method}/ \
+      --bonferroni-scope ${scope} \
+      --output-dir ${DIR}/output/heatmaps/${scope}/${method}
+  done
 done
